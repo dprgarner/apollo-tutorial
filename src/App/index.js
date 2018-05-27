@@ -1,18 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
 import logo from './logo.svg';
+
+import Profile from '../Profile';
+
 import './styles.css';
 
-class App extends Component {
+class App extends React.Component {
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">React Apollo Tutorial</h1>
+          <h2 className="App-subtitle">
+            https://www.robinwieruch.de/react-graphql-apollo-tutorial/#react-graphql-apollo-client
+          </h2>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+
+        <Profile />
       </div>
     );
   }

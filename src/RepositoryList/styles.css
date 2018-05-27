@@ -1,0 +1,7 @@
+.RepositoryItem {
+  border: 1px dashed black;
+  text-align: left;
+  margin: 5px auto;
+  max-width: 500px;
+  white-space: pre-wrap;
+}
