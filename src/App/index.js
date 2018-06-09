@@ -5,22 +5,18 @@ import Profile from '../Profile';
 
 import './styles.css';
 
-class App extends React.Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">React Apollo Tutorial</h1>
-          <h2 className="App-subtitle">
-            https://www.robinwieruch.de/react-graphql-apollo-tutorial/#react-graphql-apollo-client
-          </h2>
-        </header>
+const App = () => (
+  <div className="App">
+    <header className="App-header">
+      <img src={logo} className="App-logo" alt="logo" />
+      <h1 className="App-title">React Apollo Tutorial</h1>
+      <h2 className="App-subtitle">
+        https://www.robinwieruch.de/react-graphql-apollo-tutorial/#react-graphql-apollo-client
+      </h2>
+    </header>
 
-        <Profile />
-      </div>
-    );
-  }
-}
+    <Profile />
+  </div>
+);
 
 export default App;

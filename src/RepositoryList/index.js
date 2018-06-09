@@ -2,25 +2,13 @@ import React from 'react';
 
 import './styles.css';
 
-/*
-{
-  ?
-  watchers {
-    totalCount
-  }
-
-  ?
-  viewerSubscription
-}
-*/
-
-const Link = (props) => (
+const Link = props => (
   <a target="_blank" {...props}>
     { props.children }
   </a>
 );
 
-const RepositoryItem = (props) => (
+const RepositoryItem = props => (
   <div>
     <div className="RepositoryItem-title">
       <h2>
@@ -39,6 +27,7 @@ const RepositoryItem = (props) => (
     <div className="RepositoryItem-description">
       <div
         className="RepositoryItem-description-info"
+        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: props.descriptionHTML }}
       />
 
@@ -54,7 +43,7 @@ const RepositoryItem = (props) => (
         { props.owner && (
           <div>
             <span>
-              {`Owner: `}
+              {'Owner: '}
               <a href={props.owner.url}>{props.owner.login}</a>
             </span>
           </div>
@@ -63,7 +52,6 @@ const RepositoryItem = (props) => (
     </div>
   </div>
 );
-
 
 const RepositoryList = ({ repositories }) => (
   repositories.edges.map(({ node }) => (

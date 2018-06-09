@@ -2,6 +2,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
+import ErrorMessage from '../Error';
 import Spinner from '../Spinner';
 import RepositoryList from '../RepositoryList';
 
@@ -48,11 +49,19 @@ const GET_USER_REPOSITORIES = gql`
 
 const Profile = () => (
   <Query query={GET_USER_REPOSITORIES}>
-    {({ data, loading }) => {
+    {({ data, loading, error }) => {
+      if (error) {
+        return (
+          <ErrorMessage error={error} />
+        );
+      }
+
       const { viewer } = data;
 
       if (loading || !viewer) {
-        return <Spinner />;
+        return (
+          <Spinner />
+        );
       }
 
       return (
@@ -60,6 +69,6 @@ const Profile = () => (
       );
     }}
   </Query>
-)
+);
 
-export default Profile
+export default Profile;
