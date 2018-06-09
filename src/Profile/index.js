@@ -32,6 +32,8 @@ const GET_USER_REPOSITORIES = gql`
     }
 
     viewerSubscription
+
+    viewerHasStarred
   }
 
   query {
