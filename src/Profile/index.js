@@ -53,22 +53,16 @@ const Profile = () => (
   <Query query={GET_USER_REPOSITORIES}>
     {({ data, loading, error }) => {
       if (error) {
-        return (
-          <ErrorMessage error={error} />
-        );
+        return <ErrorMessage error={error} />;
       }
 
       const { viewer } = data;
 
       if (loading || !viewer) {
-        return (
-          <Spinner />
-        );
+        return <Spinner />;
       }
 
-      return (
-        <RepositoryList repositories={viewer.repositories} />
-      );
+      return <RepositoryList repositories={viewer.repositories} />;
     }}
   </Query>
 );

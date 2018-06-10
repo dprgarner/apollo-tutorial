@@ -4,7 +4,7 @@ import { Mutation } from 'react-apollo';
 
 const Link = props => (
   <a target="_blank" {...props}>
-    { props.children }
+    {props.children}
   </a>
 );
 
@@ -37,9 +37,7 @@ const RepositoryItem = props => (
         <Link href={props.url}>{props.name}</Link>
       </h2>
 
-      <h3>
-        {`Created at: ${props.createdAt}`}
-      </h3>
+      <h3>{`Created at: ${props.createdAt}`}</h3>
 
       <div>
         <Mutation
@@ -48,14 +46,14 @@ const RepositoryItem = props => (
           }
           variables={{ id: props.id }}
         >
-          { (changeStar) => (
+          {changeStar => (
             <button
               className="RepositoryItem-title-action"
               onClick={changeStar}
             >
               {props.stargazers.totalCount} Stars
             </button>
-          ) }
+          )}
         </Mutation>
       </div>
     </div>
@@ -68,22 +66,20 @@ const RepositoryItem = props => (
       />
 
       <div className="RepositoryItem-description-details">
-        { props.primaryLanguage && (
+        {props.primaryLanguage && (
           <div>
-            <span>
-              {`Language: ${props.primaryLanguage.name}`}
-            </span>
+            <span>{`Language: ${props.primaryLanguage.name}`}</span>
           </div>
-        ) }
+        )}
 
-        { props.owner && (
+        {props.owner && (
           <div>
             <span>
               {'Owner: '}
               <a href={props.owner.url}>{props.owner.login}</a>
             </span>
           </div>
-        ) }
+        )}
       </div>
     </div>
   </div>

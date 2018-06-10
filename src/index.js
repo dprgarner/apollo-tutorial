@@ -38,11 +38,10 @@ const link = ApolloLink.from([errorLink, httpLink]);
 
 const client = new ApolloClient({ link, cache });
 
-
 ReactDOM.render(
   <ApolloProvider client={client}>
     <App />
   </ApolloProvider>,
-  document.getElementById('root'),
+  document.getElementById('root')
 );
 registerServiceWorker();
