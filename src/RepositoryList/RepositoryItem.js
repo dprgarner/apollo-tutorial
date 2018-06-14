@@ -1,6 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
+import REPOSITORY_FRAGMENT from './fragments';
 
 const Link = props => (
   <a target="_blank" {...props}>
@@ -30,6 +31,65 @@ const UNSTAR_REPOSITORY = gql`
   }
 `;
 
+const updateAddStar = (
+  client,
+  {
+    data: {
+      addStar: {
+        starrable: { id },
+      },
+    },
+  }
+) => {
+  const repository = client.readFragment({
+    id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+  });
+
+  const totalCount = repository.stargazers.totalCount + 1;
+
+  client.writeFragment({
+    id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+    data: {
+      ...repository,
+      stargazers: {
+        ...repository.stargazers,
+        totalCount,
+      },
+    },
+  });
+};
+
+const updateRemoveStar = (
+  client,
+  {
+    data: {
+      removeStar: {
+        starrable: { id },
+      },
+    },
+  }
+) => {
+  const repository = client.readFragment({
+    id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+  });
+
+  const totalCount = repository.stargazers.totalCount - 1;
+
+  client.writeFragment({
+    id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+    data: {
+      ...repository,
+      stargazers: {
+        ...repository.stargazers,
+        totalCount,
+      },
+    },
+  });
+};
 const RepositoryItem = props => (
   <div>
     <div className="RepositoryItem-title">
@@ -40,21 +100,34 @@ const RepositoryItem = props => (
       <h3>{`Created at: ${props.createdAt}`}</h3>
 
       <div>
-        <Mutation
-          mutation={
-            props.viewerHasStarred ? UNSTAR_REPOSITORY : STAR_REPOSITORY
-          }
-          variables={{ id: props.id }}
-        >
-          {changeStar => (
-            <button
-              className="RepositoryItem-title-action"
-              onClick={changeStar}
-            >
-              {props.stargazers.totalCount} Stars
-            </button>
-          )}
-        </Mutation>
+        {props.viewerHasStarred ? (
+          <Mutation
+            mutation={UNSTAR_REPOSITORY}
+            variables={{ id: props.id }}
+            update={updateRemoveStar}
+          >
+            {removeStar => (
+              <button
+                className="RepositoryItem-title-action"
+                onClick={removeStar}
+              >
+                {`${props.stargazers.totalCount} Stars (Unstar)`}
+              </button>
+            )}
+          </Mutation>
+        ) : (
+          <Mutation
+            mutation={STAR_REPOSITORY}
+            variables={{ id: props.id }}
+            update={updateAddStar}
+          >
+            {addStar => (
+              <button className="RepositoryItem-title-action" onClick={addStar}>
+                {`${props.stargazers.totalCount} Stars (Star)`}
+              </button>
+            )}
+          </Mutation>
+        )}
       </div>
     </div>
 

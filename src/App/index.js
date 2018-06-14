@@ -11,7 +11,7 @@ const App = () => (
       <img src={logo} className="App-logo" alt="logo" />
       <h1 className="App-title">React Apollo Tutorial</h1>
       <h2 className="App-subtitle">
-        https://www.robinwieruch.de/react-graphql-apollo-tutorial/#react-graphql-apollo-client
+        https://www.robinwieruch.de/react-graphql-apollo-tutorial/#react-apollo-client-optimistic-ui
       </h2>
     </header>
 
