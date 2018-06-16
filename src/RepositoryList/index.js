@@ -1,2 +1,2 @@
-export { default as REPOSITORY_FRAGMENT } from './fragments';
+export * from './fragments';
 export { default } from './RepositoryList';

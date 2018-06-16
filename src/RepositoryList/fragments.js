@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-const REPOSITORY_FRAGMENT = gql`
+export const REPOSITORY_FRAGMENT = gql`
   fragment repository on Repository {
     id
     name
@@ -31,4 +31,18 @@ const REPOSITORY_FRAGMENT = gql`
   }
 `;
 
-export default REPOSITORY_FRAGMENT;
+export const GET_USER_REPOSITORIES = gql`
+  query {
+    viewer {
+      repositories(first: 5, orderBy: { direction: DESC, field: STARGAZERS }) {
+        edges {
+          node {
+            ...repository
+          }
+        }
+      }
+    }
+  }
+
+  ${REPOSITORY_FRAGMENT}
+`;

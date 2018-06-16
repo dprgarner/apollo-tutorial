@@ -1,26 +1,9 @@
 import React from 'react';
-import gql from 'graphql-tag';
 import { Query } from 'react-apollo';
 
 import ErrorMessage from '../Error';
 import Spinner from '../Spinner';
-import RepositoryList, { REPOSITORY_FRAGMENT } from '../RepositoryList';
-
-const GET_USER_REPOSITORIES = gql`
-  query {
-    viewer {
-      repositories(first: 5, orderBy: { direction: DESC, field: STARGAZERS }) {
-        edges {
-          node {
-            ...repository
-          }
-        }
-      }
-    }
-  }
-
-  ${REPOSITORY_FRAGMENT}
-`;
+import RepositoryList, { GET_USER_REPOSITORIES } from '../RepositoryList';
 
 const Profile = () => (
   <Query query={GET_USER_REPOSITORIES}>
