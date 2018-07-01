@@ -1,7 +1,8 @@
 import React from 'react';
 import FlipMove from 'react-flip-move';
 
-import Spinner from '../Spinner';
+import FetchMore from '../FetchMore';
+
 import RepositoryItem from './RepositoryItem';
 import './styles.css';
 
@@ -33,22 +34,13 @@ const RepositoryList = props => (
         </div>
       ))}
     </FlipMove>
-    {props.loadingMore && <Spinner />}
-    {props.repositories.pageInfo.hasNextPage &&
-      !props.loadingMore && (
-        <button
-          onClick={() =>
-            props.fetchMore({
-              variables: {
-                cursor: props.repositories.pageInfo.endCursor,
-              },
-              updateQuery,
-            })
-          }
-        >
-          {'Fetch more'}
-        </button>
-      )}
+
+    <FetchMore
+      loading={props.loadingMore}
+      pageInfo={props.repositories.pageInfo}
+      updateQuery={updateQuery}
+      fetchMore={props.fetchMore}
+    />
   </React.Fragment>
 );
 
