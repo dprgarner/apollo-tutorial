@@ -106,21 +106,12 @@ const SET_WATCH_REPO = gql`
   mutation($id: ID!, $state: SubscriptionState!) {
     updateSubscription(input: { subscribableId: $id, state: $state }) {
       subscribable {
-        ... on Repository {
-          ...repository
-        }
+        id
+        viewerSubscription
       }
     }
   }
-
-  ${REPOSITORY_FRAGMENT}
 `;
-
-const Link = props => (
-  <a target="_blank" {...props}>
-    {props.children}
-  </a>
-);
 
 const isWatching = viewerSubscription => viewerSubscription === 'SUBSCRIBED';
 
@@ -130,6 +121,43 @@ const subscriptionToText = state =>
     UNSUBSCRIBED: 'unsubscribed',
     IGNORED: 'ignored',
   }[state]);
+
+function updateWatchers(
+  client,
+  {
+    data: {
+      updateSubscription: {
+        subscribable: { id, viewerSubscription },
+      },
+    },
+  }
+) {
+  const repository = client.readFragment({
+    id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+  });
+
+  const totalCount =
+    repository.watchers.totalCount + (isWatching(viewerSubscription) ? 1 : -1);
+
+  client.writeFragment({
+    id: `Repository:${id}`,
+    fragment: REPOSITORY_FRAGMENT,
+    data: {
+      ...repository,
+      watchers: {
+        ...repository.watchers,
+        totalCount,
+      },
+    },
+  });
+}
+
+const Link = props => (
+  <a target="_blank" {...props}>
+    {props.children}
+  </a>
+);
 
 const RepositoryItem = props => (
   <div>
@@ -219,15 +247,10 @@ const RepositoryItem = props => (
                 viewerSubscription: isWatching(props.viewerSubscription)
                   ? 'UNSUBSCRIBED'
                   : 'SUBSCRIBED',
-                watchers: {
-                  __typename: 'UserConnection',
-                  totalCount: isWatching(props.viewerSubscription)
-                    ? props.watchers.totalCount - 1
-                    : props.watchers.totalCount + 1,
-                },
               },
             },
           }}
+          update={updateWatchers}
         >
           {setWatchRepo => (
             <button onClick={setWatchRepo}>
