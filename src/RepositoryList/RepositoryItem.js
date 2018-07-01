@@ -122,6 +122,8 @@ const Link = props => (
   </a>
 );
 
+const isWatching = viewerSubscription => viewerSubscription === 'SUBSCRIBED';
+
 const subscriptionToText = state =>
   ({
     SUBSCRIBED: 'subscribed',
@@ -204,15 +206,32 @@ const RepositoryItem = props => (
           mutation={SET_WATCH_REPO}
           variables={{
             id: props.id,
-            state:
-              props.viewerSubscription === 'SUBSCRIBED'
-                ? 'UNSUBSCRIBED'
-                : 'SUBSCRIBED',
+            state: isWatching(props.viewerSubscription)
+              ? 'UNSUBSCRIBED'
+              : 'SUBSCRIBED',
+          }}
+          optimisticResponse={{
+            updateSubscription: {
+              __typename: 'Mutation',
+              subscribable: {
+                __typename: 'Repository',
+                id: props.id,
+                viewerSubscription: isWatching(props.viewerSubscription)
+                  ? 'UNSUBSCRIBED'
+                  : 'SUBSCRIBED',
+                watchers: {
+                  __typename: 'UserConnection',
+                  totalCount: isWatching(props.viewerSubscription)
+                    ? props.watchers.totalCount - 1
+                    : props.watchers.totalCount + 1,
+                },
+              },
+            },
           }}
         >
           {setWatchRepo => (
             <button onClick={setWatchRepo}>
-              {props.viewerSubscription === 'SUBSCRIBED' ? 'Unwatch' : 'Watch'}
+              {isWatching(props.viewerSubscription) ? 'Unwatch' : 'Watch'}
             </button>
           )}
         </Mutation>
