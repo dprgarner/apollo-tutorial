@@ -3,12 +3,6 @@ import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import { GET_USER_REPOSITORIES, REPOSITORY_FRAGMENT } from './fragments';
 
-const Link = props => (
-  <a target="_blank" {...props}>
-    {props.children}
-  </a>
-);
-
 const STAR_REPOSITORY = gql`
   mutation($id: ID!) {
     addStar(input: { starrableId: $id }) {
@@ -108,6 +102,33 @@ function updateRemoveStar(
   sortRepositoryConnectionQuery(client, id);
 }
 
+const SET_WATCH_REPO = gql`
+  mutation($id: ID!, $state: SubscriptionState!) {
+    updateSubscription(input: { subscribableId: $id, state: $state }) {
+      subscribable {
+        ... on Repository {
+          ...repository
+        }
+      }
+    }
+  }
+
+  ${REPOSITORY_FRAGMENT}
+`;
+
+const Link = props => (
+  <a target="_blank" {...props}>
+    {props.children}
+  </a>
+);
+
+const subscriptionToText = state =>
+  ({
+    SUBSCRIBED: 'subscribed',
+    UNSUBSCRIBED: 'unsubscribed',
+    IGNORED: 'ignored',
+  }[state]);
+
 const RepositoryItem = props => (
   <div>
     <div className="RepositoryItem-title">
@@ -116,7 +137,34 @@ const RepositoryItem = props => (
       </h2>
 
       <h3>{`Created at: ${props.createdAt}`}</h3>
+    </div>
 
+    <div className="RepositoryItem-description">
+      <div
+        className="RepositoryItem-description-info"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: props.descriptionHTML }}
+      />
+
+      <div className="RepositoryItem-description-details">
+        {props.primaryLanguage && (
+          <div>
+            <span>{`Language: ${props.primaryLanguage.name}`}</span>
+          </div>
+        )}
+
+        {props.owner && (
+          <div>
+            <span>
+              {'Owner: '}
+              <a href={props.owner.url}>{props.owner.login}</a>
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+
+    <div className="RepositoryItem-buttons">
       <div>
         {props.viewerHasStarred ? (
           <Mutation
@@ -147,30 +195,27 @@ const RepositoryItem = props => (
           </Mutation>
         )}
       </div>
-    </div>
 
-    <div className="RepositoryItem-description">
-      <div
-        className="RepositoryItem-description-info"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: props.descriptionHTML }}
-      />
-
-      <div className="RepositoryItem-description-details">
-        {props.primaryLanguage && (
-          <div>
-            <span>{`Language: ${props.primaryLanguage.name}`}</span>
-          </div>
-        )}
-
-        {props.owner && (
-          <div>
-            <span>
-              {'Owner: '}
-              <a href={props.owner.url}>{props.owner.login}</a>
-            </span>
-          </div>
-        )}
+      <div>
+        {`${props.watchers.totalCount} watchers (${subscriptionToText(
+          props.viewerSubscription
+        )})`}
+        <Mutation
+          mutation={SET_WATCH_REPO}
+          variables={{
+            id: props.id,
+            state:
+              props.viewerSubscription === 'SUBSCRIBED'
+                ? 'UNSUBSCRIBED'
+                : 'SUBSCRIBED',
+          }}
+        >
+          {setWatchRepo => (
+            <button onClick={setWatchRepo}>
+              {props.viewerSubscription === 'SUBSCRIBED' ? 'Unwatch' : 'Watch'}
+            </button>
+          )}
+        </Mutation>
       </div>
     </div>
   </div>
