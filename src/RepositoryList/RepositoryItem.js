@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Stars from './Stars';
 import Watchers from './Watchers';
 
