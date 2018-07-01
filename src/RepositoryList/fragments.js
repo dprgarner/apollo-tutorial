@@ -32,13 +32,22 @@ export const REPOSITORY_FRAGMENT = gql`
 `;
 
 export const GET_USER_REPOSITORIES = gql`
-  query {
+  query($cursor: String) {
     viewer {
-      repositories(first: 5, orderBy: { direction: DESC, field: STARGAZERS }) {
+      repositories(
+        first: 5
+        orderBy: { direction: DESC, field: STARGAZERS }
+        after: $cursor
+      ) {
         edges {
           node {
             ...repository
           }
+        }
+
+        pageInfo {
+          endCursor
+          hasNextPage
         }
       }
     }

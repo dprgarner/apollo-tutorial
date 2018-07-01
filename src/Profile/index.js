@@ -6,19 +6,23 @@ import Spinner from '../Spinner';
 import RepositoryList, { GET_USER_REPOSITORIES } from '../RepositoryList';
 
 const Profile = () => (
-  <Query query={GET_USER_REPOSITORIES}>
-    {({ data, loading, error }) => {
+  <Query query={GET_USER_REPOSITORIES} notifyOnNetworkStatusChange={true}>
+    {({ data, loading, error, fetchMore }) => {
       if (error) {
         return <ErrorMessage error={error} />;
       }
 
-      const { viewer } = data;
-
-      if (loading || !viewer) {
+      if (loading && !data.viewer) {
         return <Spinner />;
       }
 
-      return <RepositoryList repositories={viewer.repositories} />;
+      return (
+        <RepositoryList
+          repositories={data.viewer.repositories}
+          fetchMore={fetchMore}
+          loadingMore={loading && data.viewer}
+        />
+      );
     }}
   </Query>
 );
