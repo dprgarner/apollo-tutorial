@@ -21,6 +21,7 @@ const Profile = () => (
           repositories={data.viewer.repositories}
           fetchMore={fetchMore}
           loadingMore={loading && data.viewer}
+          entry="viewer"
         />
       );
     }}

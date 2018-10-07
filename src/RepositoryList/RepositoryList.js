@@ -6,24 +6,24 @@ import FetchMore from '../FetchMore';
 import RepositoryItem from './RepositoryItem';
 import './styles.css';
 
-function updateQuery(prevResult, { fetchMoreResult }) {
+const getUpdateQuery = entry => (prevResult, { fetchMoreResult }) => {
   if (!fetchMoreResult) return prevResult;
 
   return {
     ...prevResult,
-    viewer: {
-      ...prevResult.viewer,
+    [entry]: {
+      ...prevResult[entry],
       repositories: {
-        ...prevResult.viewer.repositories,
-        ...fetchMoreResult.viewer.repositories,
+        ...prevResult[entry].repositories,
+        ...fetchMoreResult[entry].repositories,
         edges: [
-          ...prevResult.viewer.repositories.edges,
-          ...fetchMoreResult.viewer.repositories.edges,
+          ...prevResult[entry].repositories.edges,
+          ...fetchMoreResult[entry].repositories.edges,
         ],
       },
     },
   };
-}
+};
 
 const RepositoryList = props => (
   <React.Fragment>
@@ -38,7 +38,7 @@ const RepositoryList = props => (
     <FetchMore
       loading={props.loadingMore}
       pageInfo={props.repositories.pageInfo}
-      updateQuery={updateQuery}
+      updateQuery={getUpdateQuery(props.entry)}
       fetchMore={props.fetchMore}
     />
   </React.Fragment>

@@ -4,14 +4,14 @@
 }
 
 .Navigation-link-wrapper {
-  display: inline-block;
   border: 1px solid black;
+  display: inline-block;
 }
 
 .Navigation-link {
-  display: inline-block;
   background-color: #ccc;
-  padding: 10px;
   color: black;
+  display: inline-block;
+  padding: 10px;
   text-decoration: none;
 }
