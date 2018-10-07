@@ -5,7 +5,8 @@ import Spinner from '../Spinner';
 export default props => (
   <React.Fragment>
     {props.loading && <Spinner />}
-    {props.pageInfo.hasNextPage &&
+    {!props.loading &&
+      props.pageInfo.hasNextPage &&
       !props.loadingMore && (
         <button
           onClick={() =>
