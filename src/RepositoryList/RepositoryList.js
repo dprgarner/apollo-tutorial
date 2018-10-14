@@ -2,6 +2,7 @@ import React from 'react';
 import FlipMove from 'react-flip-move';
 
 import FetchMore from '../FetchMore';
+import Issues from '../Issues';
 
 import RepositoryItem from './RepositoryItem';
 import './styles.css';
@@ -31,6 +32,11 @@ const RepositoryList = props => (
       {props.repositories.edges.map(({ node }) => (
         <div key={node.id} className="RepositoryItem">
           <RepositoryItem {...node} />
+
+          <Issues
+            repositoryName={node.name}
+            repositoryOwner={node.owner.login}
+          />
         </div>
       ))}
     </FlipMove>

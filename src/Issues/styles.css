@@ -1,0 +1,9 @@
+.IssueList {
+  width: 80%;
+  margin: auto;
+  font-size: 12px;
+}
+
+.IssueItem:not(:last-child) {
+  border-bottom: 1px dotted black;
+}
