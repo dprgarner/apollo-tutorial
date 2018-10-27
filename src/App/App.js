@@ -22,7 +22,7 @@ export default class App extends React.Component {
             <img src={logo} className="App-logo" alt="logo" />
             <h1 className="App-title">React Apollo Tutorial</h1>
             <h2 className="App-subtitle">
-              https://www.robinwieruch.de/react-graphql-apollo-tutorial/#react-apollo-client-feature-client-filter
+              https://www.robinwieruch.de/react-graphql-apollo-tutorial/#react-apollo-client-prefetching-data
             </h2>
           </header>
           <Navigation
