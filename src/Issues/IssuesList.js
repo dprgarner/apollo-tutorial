@@ -1,5 +1,5 @@
 import React from 'react';
-import { Query } from 'react-apollo';
+import { Query, ApolloConsumer } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import ErrorMessage from '../Error';
@@ -52,6 +52,42 @@ const TRANSITION_LABELS = {
 
 const isShow = issueState => issueState !== ISSUE_STATES.NONE;
 
+const prefetchIssues = (client, repositoryOwner, repositoryName, issue) => {
+  const nextIssue = TRANSITION_STATE[issue];
+
+  if (isShow(nextIssue)) {
+    client.query({
+      query: GET_ISSUES_OF_REPOSITORY,
+      variables: {
+        repositoryOwner: repositoryOwner,
+        repositoryName: repositoryName,
+        issueState: nextIssue,
+      },
+    });
+  }
+};
+
+const IssueFilter = props => (
+  <ApolloConsumer>
+    {client => (
+      <button
+        type="button"
+        onClick={() => props.onChangeIssueState(TRANSITION_STATE[props.issue])}
+        onMouseOver={() =>
+          prefetchIssues(
+            client,
+            props.repositoryOwner,
+            props.repositoryName,
+            props.issue
+          )
+        }
+      >
+        {TRANSITION_LABELS[props.issue]}
+      </button>
+    )}
+  </ApolloConsumer>
+);
+
 class Issues extends React.Component {
   state = { issue: ISSUE_STATES.NONE };
 
@@ -62,14 +98,12 @@ class Issues extends React.Component {
   render() {
     return (
       <div className="Issues">
-        <button
-          type="button"
-          onClick={() =>
-            this.handleChangeissue(TRANSITION_STATE[this.state.issue])
-          }
-        >
-          {TRANSITION_LABELS[this.state.issue]}
-        </button>
+        <IssueFilter
+          issue={this.state.issue}
+          onChangeIssueState={this.handleChangeissue}
+          repositoryOwner={this.props.repositoryOwner}
+          repositoryName={this.props.repositoryName}
+        />
         {isShow(this.state.issue) && (
           <Query
             query={GET_ISSUES_OF_REPOSITORY}
